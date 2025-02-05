@@ -4,8 +4,7 @@ local M = {}
 -- Default configuration
 local config = {
 	projects_root = vim.env.HOME .. "/Projects",
-	-- allowed_exts = { "c", "ts", "rs", "cpp", "vue", "py", "lua", "dart", "js", "cs", "vim", "kt", "qml", "cu", "sh", "s" },
-	allowed_exts = nil,
+	allowed_exts = { "c", "ts", "rs", "cpp", "vue", "py", "lua", "dart", "js", "cs", "vim", "kt", "qml", "cu", "sh", "s" },
 	ignore_dirs = { "probe", "third_party" },
 	-- Optional mappings for additional project roots.
 	extra_mappings = {}, -- e.g. { probe = vim.env.HOME .. "/Projects/probe", third_party = vim.env.HOME .. "/Projects/third_party" }
@@ -27,22 +26,23 @@ local function find_mc_ext(path, allowed_exts)
 	local cmd = string.format("cd %q && git ls-files --exclude-standard -co", path)
 	local files = vim.fn.systemlist(cmd)
 	if vim.v.shell_error ~= 0 then
-		vim.api.nvim_err_writeln("Error: 'git ls-files' failed. Is the directory a Git repository?")
-		return nil
+		-- The folder is not a git repository. Get all files in the folder.
+		local ncmd = string.format('cd %q && find . -type f', path)
+		files = vim.fn.systemlist(ncmd)
+		if vim.v.shell_error ~= 0 then
+			vim.notify("Failed to list files in " .. path, vim.log.levels.ERROR)
+			return
+		end
 	end
 
 	local ext_counts = {}
 	for _, file in ipairs(files) do
 		-- Extract extension: everything after the last dot.
 		local ext = file:match("%.([^%.]+)$")
-		if allowed_exts == nil then
-			ext_counts[ext] = (ext_counts[ext] or 0) + 1
-		else
-			for _, allowed_ext in ipairs(allowed_exts) do
-				if ext == allowed_ext then
-					ext_counts[ext] = (ext_counts[ext] or 0) + 1
-					break
-				end
+		for _, allowed_ext in ipairs(allowed_exts) do
+			if ext == allowed_ext then
+				ext_counts[ext] = (ext_counts[ext] or 0) + 1
+				break
 			end
 		end
 	end
