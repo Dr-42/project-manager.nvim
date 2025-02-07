@@ -138,11 +138,10 @@ local function open_projects_picker(root_path)
 			local state = require("telescope.actions.state")
 			local open_proj = function()
 				local selection = state.get_selected_entry()
-				local idx = state.get_current_picker(prompt_bufnr).finder.results[selection.ordinal] and selection.index or
-					selection.idx
+				local idx = selection.index;
+				actions.close(prompt_bufnr)
 				vim.cmd("cd " .. project_paths[idx])
 				vim.cmd("e .")
-				actions.close(prompt_bufnr)
 			end
 			map("i", "<CR>", open_proj)
 			map("n", "<CR>", open_proj)
