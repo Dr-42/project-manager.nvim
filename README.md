@@ -59,8 +59,21 @@ return {
 
 Once installed, you can open the projects picker with the keybindings you set
 
-    Press <leader>p in normal mode to open the project browser.
-    Press <leader>pp in normal mode to open the project browser for a specific project.
+```lua
+  vim.keymap.set('n', '<leader>wso',
+    require('project-manager').open_projects,
+    { desc = '[W]ork[S]pace [O]pen' })
+  vim.keymap.set('n', '<leader>wsp',
+    function()
+      require('project-manager').open_project_by_key("probe")
+    end,
+    { desc = '[W]ork[S]pace [P]robe' })
+  vim.keymap.set('n', '<leader>wst',
+    function()
+      require('project-manager').open_project_by_key("third_party")
+    end,
+    { desc = '[W]ork[S]pace [T]hird Party' })
+```
 
 ## How It Works
 
