@@ -44,9 +44,10 @@ local function find_mc_ext(path, allowed_exts)
 			if ext == allowed_ext then
 				ext_counts[ext] = (ext_counts[ext] or 0) + 1
 				break
-			else
-				unallowed_counts[ext] = (unallowed_counts[ext] or 0) + 1
 			end
+		end
+		if ext ~= nil then
+			unallowed_counts[ext] = (unallowed_counts[ext] or 0) + 1
 		end
 	end
 
