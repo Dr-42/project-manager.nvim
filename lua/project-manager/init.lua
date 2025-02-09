@@ -35,7 +35,8 @@ local function find_mc_ext(path, allowed_exts)
 		end
 	end
 
-	local ext_counts, unallowed_counts = {}, {}
+	local ext_counts = {}
+	local unallowed_counts = {}
 	for _, file in ipairs(files) do
 		-- Extract extension: everything after the last dot.
 		local ext = file:match("%.([^%.]+)$")
