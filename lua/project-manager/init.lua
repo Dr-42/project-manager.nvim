@@ -35,7 +35,7 @@ local function find_mc_ext(path, allowed_exts)
 		end
 	end
 
-	local ext_counts = {}
+	local ext_counts, unallowed_counts = {}, {}
 	for _, file in ipairs(files) do
 		-- Extract extension: everything after the last dot.
 		local ext = file:match("%.([^%.]+)$")
@@ -43,6 +43,8 @@ local function find_mc_ext(path, allowed_exts)
 			if ext == allowed_ext then
 				ext_counts[ext] = (ext_counts[ext] or 0) + 1
 				break
+			else
+				unallowed_counts[ext] = (unallowed_counts[ext] or 0) + 1
 			end
 		end
 	end
@@ -52,6 +54,14 @@ local function find_mc_ext(path, allowed_exts)
 		if count > highest then
 			most_common = ext
 			highest = count
+		end
+	end
+	if highest == 0 then
+		for ext, count in pairs(unallowed_counts) do
+			if count > highest then
+				most_common = ext
+				highest = count
+			end
 		end
 	end
 	return most_common
